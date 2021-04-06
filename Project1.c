@@ -147,7 +147,7 @@ int main(){
   newtask.pointer_to_func();*/
 
   //struct taskQueue *ready_queue;
-  printf("dsfdsfds");
+  printf("dsfdsfo");
   init(20);
   //ready_queue->tasks[9].pointer_to_func();
   QueTask(&print,324);
