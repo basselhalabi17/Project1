@@ -59,7 +59,7 @@ void delayMs(int n){
     for(i = 0 ; i < n; i++)
      for(j = 0; j < 3180; j++)
         {} // do nothing for 1 ms
-    printf("Tick Finished");
+    printf(" Tick Finished\n");
 }
 void ReRunMe(int delay){
     if (delay==0) {
@@ -72,19 +72,19 @@ void ReRunMe(int delay){
 }
 
 void print(struct taskQueue *q, int size){
-    printf("\nbassel alby ");
-    ReRunMe(0);  
+    printf(" bassel alby");
+    ReRunMe(4);  
 }
 void print2(struct taskQueue *q, int size){
-    printf("\nchris alby");
-    ReRunMe(5);
+    printf(" chris alby");
+    ReRunMe(3);
 }
 void Nothing(){
     //printf("bassel alby ");  
 }
  void init(int size)
 {
-    printf("fgdgfd ");
+    //printf("fgdgfd ");
     ready_queue.CURRENTSIZE=0;
     ready_queue.MAXSIZE=size;
     ready_queue.tasks = (struct task*)malloc(size * sizeof(struct task));
@@ -107,7 +107,7 @@ void Nothing(){
 
 void dispatch(){
     if (ready_queue.CURRENTSIZE > 0){
-        printf("Enter dispatch");
+        printf("Enter dispatch and readqqueue!=0 ");
     ready_queue.tasks[0].pointer_to_func();  
    for (int i=0;i<ready_queue.CURRENTSIZE;i++){
        ready_queue.tasks[i] = ready_queue.tasks[i+1];
@@ -117,24 +117,45 @@ void dispatch(){
    ready_queue.tasks[ready_queue.CURRENTSIZE].priority = -1;
    ready_queue.tasks[ready_queue.CURRENTSIZE].delay=0;
    ready_queue.tasks[ready_queue.CURRENTSIZE].pointer_to_func = &Nothing;
-   for (int j=0;j<delay_queue.CURRENTSIZE;j++){
-       delay_queue.tasks[j].delay--;
-       if (delay_queue.tasks[j].delay == 0) 
-       {
-            QueTask(delay_queue.tasks[j].pointer_to_func,delay_queue.tasks[j].priority);
-            for (int i=0;i<delay_queue.CURRENTSIZE;i++)
-                delay_queue.tasks[i] = delay_queue.tasks[i+1];        
-            delay_queue.CURRENTSIZE--;
-            delay_queue.tasks[delay_queue.CURRENTSIZE].priority = -1;
-            delay_queue.tasks[delay_queue.CURRENTSIZE].delay=99999;
-            delay_queue.tasks[delay_queue.CURRENTSIZE].pointer_to_func = &Nothing;
-       }
+   for (int j=0;j<delay_queue.CURRENTSIZE;j++)
+        {
+            delay_queue.tasks[j].delay--;
+            if (delay_queue.tasks[j].delay == 0) 
+            {
+                    QueTask(delay_queue.tasks[j].pointer_to_func,delay_queue.tasks[j].priority);
+                    for (int i=0;i<delay_queue.CURRENTSIZE;i++)
+                        delay_queue.tasks[i] = delay_queue.tasks[i+1];        
+                    delay_queue.CURRENTSIZE--;
+                    delay_queue.tasks[delay_queue.CURRENTSIZE].priority = -1;
+                    delay_queue.tasks[delay_queue.CURRENTSIZE].delay=99999;
+                    delay_queue.tasks[delay_queue.CURRENTSIZE].pointer_to_func = &Nothing;
+            }
 
-   }
-    delayMs(50);
+        }
     }
-   else 
-    printf("Ready Queue empty");
+   else if (ready_queue.CURRENTSIZE==0)//if no tasks in ready queue in this tick now
+        {
+            printf("No task scheduled lesa");
+
+            for (int j=0;j<delay_queue.CURRENTSIZE;j++)
+            {
+                delay_queue.tasks[j].delay--;
+                if (delay_queue.tasks[j].delay == 0) 
+                {
+                        QueTask(delay_queue.tasks[j].pointer_to_func,delay_queue.tasks[j].priority);
+                        for (int i=0;i<delay_queue.CURRENTSIZE;i++)
+                            delay_queue.tasks[i] = delay_queue.tasks[i+1];        
+                        delay_queue.CURRENTSIZE--;
+                        delay_queue.tasks[delay_queue.CURRENTSIZE].priority = -1;
+                        delay_queue.tasks[delay_queue.CURRENTSIZE].delay=99999;
+                        delay_queue.tasks[delay_queue.CURRENTSIZE].pointer_to_func = &Nothing;
+                }
+
+            
+            }
+        }
+
+    delayMs(50); //50ms after dispatch
     
 }
 
@@ -147,7 +168,7 @@ int main(){
   newtask.pointer_to_func();*/
 
   //struct taskQueue *ready_queue;
-  printf("dsfdsfo");
+  //printf("dsfdsfo");
   init(20);
   //ready_queue->tasks[9].pointer_to_func();
   QueTask(&print,324);
@@ -156,7 +177,7 @@ int main(){
   QueTask(&print,45);
   QueTask(&print2,3); */
   
-  for (int p=0; p<15;p++){
+  for (int p=0; p<10;p++){
    dispatch();
   }
   //dispatch();
