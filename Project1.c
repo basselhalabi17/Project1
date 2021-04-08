@@ -22,11 +22,11 @@ struct task {
 bool flag=false;
 
 void  insertintodelay(fptr f, int delay, int prio){
-    delay_queue.tasks[delay_queue.CURRENTSIZE].delay=delay;
+    delay_queue.tasks[delay_queue.CURRENTSIZE].delay=delay+1;
     delay_queue.tasks[delay_queue.CURRENTSIZE].priority= prio;
     delay_queue.tasks[delay_queue.CURRENTSIZE].pointer_to_func =f;
     delay_queue.CURRENTSIZE++;
-
+    
     for (int i=0; i<delay_queue.CURRENTSIZE;i++){
         for (int j=0; j<delay_queue.CURRENTSIZE;j++){
             if (delay_queue.tasks[i].delay < delay_queue.tasks[j].delay && i!=j){
@@ -76,12 +76,17 @@ void ReRunMe(int delay){
 
 void print(struct taskQueue *q, int size){
     printf(" bassel alby");
-    ReRunMe(6);  
+    ReRunMe(0);  
 }
 void print2(struct taskQueue *q, int size){
     printf(" chris alby");
-    ReRunMe(3);
+    ReRunMe(1);
 }
+/*
+void task3(struct taskQueue *q, int size){
+    printf(" task3");
+    ReRunMe(5);
+}*/
 void Nothing(){
     //printf("bassel alby ");  
 }
@@ -123,7 +128,7 @@ void dispatch(){
         ready_queue.tasks[ready_queue.CURRENTSIZE].delay=99999;
         ready_queue.tasks[ready_queue.CURRENTSIZE].pointer_to_func = &Nothing;
         
-        int initialqueuesize= delay_queue.CURRENTSIZE;
+        //int initialqueuesize= delay_queue.CURRENTSIZE;
         //for (int j=0;j<delay_queue.CURRENTSIZE;j++)
         int j=0;
         while(delay_queue.CURRENTSIZE!=0)
@@ -215,11 +220,12 @@ int main(){
   //ready_queue->tasks[9].pointer_to_func();
   QueTask(&print,324);
   QueTask(&print2,568);
+  //QueTask(&task3,200);
  /*  QueTask(&print2,5677);
   QueTask(&print,45);
   QueTask(&print2,3); */
   
-  for (int p=0; p<15;p++){
+  for (int p=0; p<12;p++){
    dispatch();
   }
   
