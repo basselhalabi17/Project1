@@ -76,11 +76,11 @@ void ReRunMe(int delay){
 
 void print(struct taskQueue *q, int size){
     printf(" bassel alby");
-    ReRunMe(0);  
+    ReRunMe(2);  
 }
 void print2(struct taskQueue *q, int size){
     printf(" chris alby");
-    ReRunMe(1);
+    ReRunMe(3);
 }
 /*
 void task3(struct taskQueue *q, int size){
