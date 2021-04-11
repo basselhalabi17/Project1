@@ -48,9 +48,9 @@ T1->priority 1 and rerun(1) , T2->priority 2 and rerun(2) , and T3->priority 3 a
 
 
 **Systick Configurations**:
---HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()*0.05); 
---HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
--- HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+--HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()*0.05); <br />
+--HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK); <br />
+-- HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0); <br />
 
 The 0.05 in the first line is what makes the Systick generate interrupt every 50 ms (1 tick).
 
@@ -58,25 +58,25 @@ The 0.05 in the first line is what makes the Systick generate interrupt every 50
 **1st application (Temperature sensor)**: In order to implement this application, we had 3 tasks. The first task is ReadTemperature() which reads the current temperature from the sensor every 30 seconds and this is given the highest priority. This function is given a ReRunMe(600) since every tick is 50 ms so we need 600 ticks to read every 30 seconds. The second task is CheckThreshold() and this compares the measured temperature with a certain threshold provided over the UART and this is given the second highest priority. If the temperature exceeds the threshold, it sets a flag to true. This function also is given a ReRunMe(600) since every tick is 50 ms so we need 600 ticks to check the threshold every 30 seconds. The third task is ToggleLed() and this is the lowest priority. This checks if the flag is true, then a LED is toggled. This is given a ReRunMe(1) as we need the toggling to keep happening every tick or stay turned off if the flag is false.
 
 CubeMX Configurations for 1st application
-SYS: Debug -> Serial Wire
-RCC: LSE-> Crystal/Ceramic Resonator
-UART-> UART1 enabled and set to Asynchronous
-I2C-> enabled (set to I2C)
+SYS: Debug -> Serial Wire <br />
+RCC: LSE-> Crystal/Ceramic Resonator <br />
+UART-> UART1 enabled and set to Asynchronous <br />
+I2C-> enabled (set to I2C) <br />
 NVIC-> Preemption priority of UART1 handler set to 7 and enabled.
 
-How to run the application: Generate code using the above configurations. Then in the main.c, put the code provided in the App1_main.c and in the stm32l4xx_it.c, put the code provided in App1_it.c. Connections are made like in the video and open Teraterm and change the baud rate to 115200 and type the threshold and press enter and wait for toggling if the read temperature (also displayed on TeraTerm) is higher than the threshold. 
+How to run the application: Generate code using the above configurations. Then in the main.c, put the code provided in the ProjectApp1/Src/main.c and in the stm32l4xx_it.c, put the code provided in ProjectApp1/Src/stm32l4xx_it.c. Connections are made like in the video and open Teraterm and change the baud rate to 115200 and type the threshold and press enter and wait for toggling if the read temperature (also displayed on TeraTerm) is higher than the threshold. 
 
 
 
-**2nd application(Parking Sensor)**: In order to implement this function, we used 2 tasks. The first is HSCR04_Read() which reads the current distance of the object from the sensor and compares the distance read to certain thresholds and sets frequencies accordingly. This is given the highest priority. The second task is toggle buzzer() and this toggles the buzzer based on the frequencies set in the first task. 
+**2nd application(Parking Sensor)**: In order to implement this function, we used 3 tasks. The first is ReadDistance() which reads the current distance of the object from the sensor and compares the distance read to certain thresholds and sets frequencies accordingly. This is given the highest priority. The second task is ToggleAlarm() and this toggles the buzzer based on the frequencies set in the first task. It is given a rerun dependent on the frequency. The third task is WaitForEachTick() and this is given rerunme of 0 to allow for toggling each tick depending on the distance 
 
 CubeMX Configurations for 2nd application:
-TIM1: Clock Source->Internal clock
-	Channel1-> input capture direct mode
-NVIC-> enable tim1 global interrupt
-Set PB3 as GPIO_Output
+TIM1: Clock Source->Internal clock <br />
+Channel1-> input capture direct mode <br />
+NVIC-> enable tim1 global interrupt <br />
+Set PB3 as GPIO_Output <br />
 
-How to run the application: Generate code using the above configurations. Then in the main.c, put the code provided in the App2_main.c and in the stm32l4xx_it.c, put the code provided in App2_it.c. Connections are made like in the video and have an object at a distance from the sensor and keep making it close and you will listen to the buzzer buzzing at a higher frequency. 
+How to run the application: Generate code using the above configurations. Then in the main.c, put the code provided in the /Project1App2_2/Src/main.c and in the stm32l4xx_it.c, put the code provided in /Project1App2_2/Src/stm32l4xx_it.c. Also, the "hcSR04.h" and "hcSR04.c" need to be added to the project. Connections are made like in the video and have an object at a distance from the sensor and keep making it close and you will listen to the buzzer buzzing at a higher frequency. 
 
 
 
