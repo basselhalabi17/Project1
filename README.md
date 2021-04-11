@@ -1,4 +1,6 @@
-Scheduler Implementation 
+Team Members: Bassel Halabi 900171095
+              Chris Amgad 900170819
+<u> Scheduler Implementation </u>
 
 **Data Structures used**
 
