@@ -235,51 +235,18 @@ void SysTick_Handler(void)
                 break;
           if(delay_queue.tasks[0].delay!= 99999)//there is a task
                 {
-                  if (delay_queue.tasks[0].delay==1 && i==0)
+                  if (delay_queue.tasks[0].delay>=1 && i==0)
                        delay_queue.tasks[0].delay--;
-                    else if (delay_queue.tasks[0].delay>1 && i==0)
-                        delay_queue.tasks[0].delay--;
-                    else if (delay_queue.tasks[i].delay==1 && i!=0)
-                        delay_queue.tasks[i].delay--;                 
-                    else if (delay_queue.tasks[i].delay>1 && i!=0)
-                        delay_queue.tasks[i].delay--;             
+                   else if (delay_queue.tasks[i].delay>=1 && i!=0)
+                       delay_queue.tasks[i].delay--;                              
                 }
 					i++;  
 				}
-						
-
 	
-	/*uint8_t c;
-	c=ticks+ '0';
-	HAL_UART_Transmit(&huart1,&c,sizeof(c),200);
-	if(ticks==20)
-	{	
-		Reached1sec=!Reached1sec;
-		//ticks=0;
-	}
-
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
 	/*
-	else if(ticks==40)
-	{	
-		Reached1sec=false;
-		//ticks=0;
-	}
-	else if(ticks==60)
-	{	
-		Reached1sec=true;
-		//ticks=0;
-	}
-	else if(ticks==80)
-	{	
-		Reached1sec=false;
-		//ticks=0;
-	}
-*/
-	//dispatch();
   /* USER CODE END SysTick_IRQn 0 */
-	//	ticks++;
   HAL_IncTick();
 	
   /* USER CODE BEGIN SysTick_IRQn 1 */
@@ -305,10 +272,10 @@ void USART1_IRQHandler(void)
   /* USER CODE BEGIN USART1_IRQn 1 */
 	//char c='h';
 	//HAL_UART_Receive(&huart1,&c,sizeof(c),200);
-/*	uint8_t c;
+	uint8_t c='\0'; // '\0' represents NULL
 	HAL_UART_Receive(&huart1,&c,sizeof(c),200);
 	//HAL_UART_Transmit(&huart1,&c,sizeof(c),200);
-	if(c!='+' && ENTERPRESSED==0) // if no enter is clicked
+	if(c!=13 && ENTERPRESSED==0) // if character not equal enter &&  no enter is clicked
 	{
 		if (digit1=='\0')//if digit 1 was still not entered
 		{
@@ -323,9 +290,15 @@ void USART1_IRQHandler(void)
 			HAL_UART_Transmit(&huart1,&digit2,sizeof(digit2),200);
 		}
 	}
-	else if (c=='+')
-		ENTERPRESSED=1;
-	*/
+	else if (c==13) //13 is ascii for enter key
+		{
+			ENTERPRESSED=1;
+			uint8_t newline='\n';
+			uint8_t carriage= '\r';
+			HAL_UART_Transmit(&huart1,&newline,sizeof(newline),200);
+			HAL_UART_Transmit(&huart1,&carriage,sizeof(carriage),200);
+		}
+	
 
 	//HAL_UART_Receive(&huart1,&digit2,sizeof(digit2),200);
 	//HAL_UART_Transmit(&huart1,&digit,sizeof(digit),200);

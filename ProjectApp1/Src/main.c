@@ -6,10 +6,19 @@
 //#include "structsdeclarations.h"
 
 #include "stm32l4xx_it.h"
-	uint8_t tt;
+uint8_t tt;
+uint8_t newline= '\n';
+uint8_t carriage= '\r';
 uint8_t IntegerDigits[2];
 uint8_t DecimalDigits[2];
+uint8_t out[] = {0,0,'.',0,0};
 
+uint8_t digit1;
+uint8_t digit2;
+/* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+
+bool ExceedThreshold=false;
 UART_HandleTypeDef huart1;
 //extern struct taskQueue ready_queue;
 //extern struct taskQueue delay_queue;
@@ -71,13 +80,7 @@ void QueTask(fptr f, int Priority)
     }
 
 }
-void delayMs(int n){
-    int i, j;
-    for(i = 0 ; i < n; i++)
-     for(j = 0; j < 3180; j++)
-        {} // do nothing for 1 ms
-    //printf(" Tick Finished \n");
-}
+
 void ReRunMe(int delay){
     if (delay==0) {
         QueTask(tasktoberemoved.pointer_to_func, tasktoberemoved.priority);
@@ -110,6 +113,89 @@ void print2(struct taskQueue *q, int size){
 			ReRunMe(200);	
 		}
 }
+
+void Toggle_LED(){
+	
+		if(ExceedThreshold==true)
+			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
+		else
+			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
+		flag=false;
+		ReRunMe(1);
+
+}
+int Temp_Threshold=0;
+
+void Compare_Threshold(){
+	
+	
+	
+	/*HAL_UART_Transmit(&huart1,&digit1,sizeof(digit1),200);
+	HAL_UART_Transmit(&huart1,&digit2,sizeof(digit2),200);
+	
+	HAL_UART_Transmit(&huart1,&newline,sizeof(newline),200);
+	HAL_UART_Transmit(&huart1,&carriage,sizeof(carriage),200);*/
+	Temp_Threshold = ((digit1-'0')*10) + (digit2-'0');
+	int TempFromSensor = ((out[0]-'0')*10) + (out[1]-'0');
+	if (TempFromSensor >= Temp_Threshold)
+		ExceedThreshold=true;
+		//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
+	else
+		ExceedThreshold=false;
+		//HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
+	flag=false;
+	ReRunMe(600);
+
+
+}
+
+void Read_Temperature()
+{
+
+		HAL_I2C_Master_Transmit(&hi2c1, 0xD0, IntegerDigits, 1, 10);
+		HAL_I2C_Master_Receive(&hi2c1, 0xD1, IntegerDigits+1, 1, 10);
+		
+		HAL_I2C_Master_Transmit(&hi2c1, 0xD0, DecimalDigits, 1, 10);
+		HAL_I2C_Master_Receive(&hi2c1, 0xD1, DecimalDigits+1, 1, 10);
+		
+		out[1] = IntegerDigits[1] %10 +'0';
+		IntegerDigits[1] = IntegerDigits[1]/10;
+		out[0] = IntegerDigits[1] %10 +'0';
+		IntegerDigits[1] = IntegerDigits[1]/10;
+		
+		uint8_t ShiftedBits= DecimalDigits[1] >>6;
+		if(ShiftedBits==0x0)
+		{
+			out[4]=0 +'0';
+			out[3]=0 +'0';
+		}
+		else if (ShiftedBits==0x1)
+		{
+			out[4]=5 +'0';
+			out[3]=2 +'0';
+		}
+		else if (ShiftedBits==0x2)
+		{
+			out[4]=0 +'0';
+			out[3]=5 +'0';
+		}
+		else if (ShiftedBits==0x3)
+		{
+			out[4]=5 +'0';
+			out[3]=7 +'0';
+		}
+	/*	out[4] = DecimalDigits[1] %10 +'0';
+		DecimalDigits[1] = DecimalDigits[1]/10;
+		out[3] = DecimalDigits[1] %10 +'0';
+		DecimalDigits[1] = DecimalDigits[1]/10;*/
+		HAL_UART_Transmit(&huart1,out, sizeof(out), 100);
+		HAL_UART_Transmit(&huart1,&newline,sizeof(newline),200);
+		HAL_UART_Transmit(&huart1,&carriage,sizeof(carriage),200);
+		flag=false;
+		ReRunMe(600);
+	
+
+}
 /*
 void task3(struct taskQueue *q, int size){
     printf(" task3");
@@ -120,14 +206,16 @@ void Nothing(){
     //printf("bassel alby "); 
 if(flag==true)
 		{
-			char x='N';
-			HAL_UART_Transmit(&huart1,&x,sizeof(x),200);
+			//char x='N';
+			//HAL_UART_Transmit(&huart1,&x,sizeof(x),200);
 			flag=false;
-		}			
+		}
+		
 }
- void init(int size)
+ void init()
 {
     //printf("fgdgfd ");
+		int size=10;
     ready_queue.CURRENTSIZE=0;
     ready_queue.MAXSIZE=size;
     ready_queue.tasks = (struct task*)malloc(size * sizeof(struct task));
@@ -152,64 +240,65 @@ void dispatch(){
     
     //printf (" ready_queue size is = %d ", ready_queue.CURRENTSIZE);
     //printf (" delay_queue size is = %d ", delay_queue.CURRENTSIZE);
-    if (ready_queue.CURRENTSIZE > 0){
-        //printf("Enter dispatch and readqqueue!=0 ");
-         
-			tasktoberemoved = ready_queue.tasks[0];//fiha bassel fel awel
-        for (int i=0;i<ready_queue.CURRENTSIZE;i++)
-            ready_queue.tasks[i] = ready_queue.tasks[i+1];
-    
-        ready_queue.CURRENTSIZE--;
-        ready_queue.tasks[ready_queue.CURRENTSIZE].priority = -1;
-        ready_queue.tasks[ready_queue.CURRENTSIZE].delay=99999;
-        ready_queue.tasks[ready_queue.CURRENTSIZE].pointer_to_func = &Nothing;
-        
-				tasktoberemoved.pointer_to_func(); 
-        //int initialqueuesize= delay_queue.CURRENTSIZE;
-        //for (int j=0;j<delay_queue.CURRENTSIZE;j++)
-       
-    }
-   else if (ready_queue.CURRENTSIZE==0)//if no tasks in ready queue in this tick now
-        {
-            //printf("No task scheduled lesa");
-						Nothing();
-						
-        }
-
-   // delayMs(50); //50ms after dispatch
-        int i=0;
-			while(delay_queue.CURRENTSIZE!=0)
-            {
-							if(delay_queue.tasks[i].delay== 99999)
-                    break;
-              /*  ;
-                if(delay_queue.tasks[0].delay!= 99999)//there is a task
-                {
-                   if (delay_queue.tasks[0].delay==1 && i==0)
-                        delay_queue.tasks[0].delay--;
-                    else if (delay_queue.tasks[0].delay>1 && i==0)
-                        delay_queue.tasks[0].delay--;
-                    else if (delay_queue.tasks[i].delay==1 && i!=0)
-                        delay_queue.tasks[i].delay--;                 
-                    else if (delay_queue.tasks[i].delay>1 && i!=0)
-                        delay_queue.tasks[i].delay--;             
-                }
-							*/
-                if(delay_queue.tasks[0].delay==0)
-                    {
-                        QueTask(delay_queue.tasks[0].pointer_to_func,delay_queue.tasks[0].priority);
-                        
-                        for (int i=0;i<delay_queue.CURRENTSIZE;i++)
-                            delay_queue.tasks[i] = delay_queue.tasks[i+1];                       
-                        delay_queue.CURRENTSIZE--;
-                        delay_queue.tasks[delay_queue.CURRENTSIZE].priority = -1;
-                        delay_queue.tasks[delay_queue.CURRENTSIZE].delay=99999;
-                        delay_queue.tasks[delay_queue.CURRENTSIZE].pointer_to_func = &Nothing;
-                        i--;
-                    } 
-                i++;                    
-            }
-    		//HAL_Delay(2000);
+	if(flag==true)
+	{	
+		if (ready_queue.CURRENTSIZE > 0){
+					//printf("Enter dispatch and readqqueue!=0 ");
+					 
+				tasktoberemoved = ready_queue.tasks[0];//fiha bassel fel awel
+					for (int i=0;i<ready_queue.CURRENTSIZE;i++)
+							ready_queue.tasks[i] = ready_queue.tasks[i+1];
+			
+					ready_queue.CURRENTSIZE--;
+					ready_queue.tasks[ready_queue.CURRENTSIZE].priority = -1;
+					ready_queue.tasks[ready_queue.CURRENTSIZE].delay=99999;
+					ready_queue.tasks[ready_queue.CURRENTSIZE].pointer_to_func = &Nothing;
+					
+					tasktoberemoved.pointer_to_func(); 
+					//int initialqueuesize= delay_queue.CURRENTSIZE;
+					//for (int j=0;j<delay_queue.CURRENTSIZE;j++)
+				 
+			}
+		 else if (ready_queue.CURRENTSIZE==0)//if no tasks in ready queue in this tick now
+					{
+							//printf("No task scheduled lesa");
+							Nothing();			
+					}
+		 // delayMs(50); //50ms after dispatch
+					int i=0;
+				while(delay_queue.CURRENTSIZE!=0)
+							{
+								if(delay_queue.tasks[i].delay== 99999)
+											break;
+								/*  ;
+									if(delay_queue.tasks[0].delay!= 99999)//there is a task
+									{
+										 if (delay_queue.tasks[0].delay==1 && i==0)
+													delay_queue.tasks[0].delay--;
+											else if (delay_queue.tasks[0].delay>1 && i==0)
+													delay_queue.tasks[0].delay--;
+											else if (delay_queue.tasks[i].delay==1 && i!=0)
+													delay_queue.tasks[i].delay--;                 
+											else if (delay_queue.tasks[i].delay>1 && i!=0)
+													delay_queue.tasks[i].delay--;             
+									}
+								*/
+									if(delay_queue.tasks[0].delay==0)
+											{
+													QueTask(delay_queue.tasks[0].pointer_to_func,delay_queue.tasks[0].priority);
+													
+													for (int i=0;i<delay_queue.CURRENTSIZE;i++)
+															delay_queue.tasks[i] = delay_queue.tasks[i+1];                       
+													delay_queue.CURRENTSIZE--;
+													delay_queue.tasks[delay_queue.CURRENTSIZE].priority = -1;
+													delay_queue.tasks[delay_queue.CURRENTSIZE].delay=99999;
+													delay_queue.tasks[delay_queue.CURRENTSIZE].pointer_to_func = &Nothing;
+													i--;
+											} 
+									i++;                    
+							}
+					//HAL_Delay(2000);
+	}
 }
 
 
@@ -232,10 +321,6 @@ void dispatch(){
 /* USER CODE BEGIN PM */
 
 /* USER CODE END PM */
-
-/* Private variables ---------------------------------------------------------*/
-I2C_HandleTypeDef hi2c1;
-
 
 /* USER CODE BEGIN PV */
 
@@ -260,8 +345,7 @@ static void MX_USART1_UART_Init(void);
   * @retval int
   */
 	
-uint8_t digit1;
-uint8_t digit2;
+
 int ENTERPRESSED=0;
 
 int main(void)
@@ -294,33 +378,29 @@ int main(void)
   IntegerDigits[0]=0x11;
 	DecimalDigits[0]=0x12;
 	
-	init(10);
-  QueTask(&print,324);
-  QueTask(&print2,568);
+	init();
+ // QueTask(&print,324);
+ // QueTask(&print2,568);
+	QueTask(&Read_Temperature,69);
+	QueTask(&Compare_Threshold,68);
+	QueTask(&Toggle_LED,67);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-	int n=0;
 	__HAL_UART_ENABLE_IT(&huart1,UART_IT_RXNE);
   while (1)
   {
 		//c= 'b';
 	
-	if(flag==true)
+	if(ENTERPRESSED==1)
 		dispatch();
-		/*if(n%2==1)
-			HAL_Delay(3000);
-		else if (n%2==0)
-			HAL_Delay(1500);
-		n++;
-		*/
+		
 		//delayMs(50);
 		
 		//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_3);
-		//delayMs(50);
-		/*if(ENTERPRESSED==1)
+/*		if(ENTERPRESSED==1)
 		{	
 		if(digit1!='\0' && digit2!='\0')
 		{
@@ -332,7 +412,8 @@ int main(void)
 			HAL_UART_Transmit(&huart1,&digit1,sizeof(digit1),200);
 		}
 	}
-		*/
+	*/
+	
 
     /* USER CODE END WHILE */
 
