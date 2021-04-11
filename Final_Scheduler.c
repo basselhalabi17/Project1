@@ -201,9 +201,9 @@ void dispatch(){
 
 int main(){
   init(20);
-  QueTask(&print,100);
-  QueTask(&print2,300); 
-  QueTask(&task3,568);
+  QueTask(&print,6);
+  QueTask(&print2,7); 
+  QueTask(&task3,8);
 
   
   for (int p=0; p<10;p++){
