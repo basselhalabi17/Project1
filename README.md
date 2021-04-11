@@ -55,7 +55,7 @@ T1->priority 1 and rerun(1) , T2->priority 2 and rerun(2) , and T3->priority 3 a
 The 0.05 in the first line is what makes the Systick generate interrupt every 50 ms (1 tick).
 
 
-**1st application (Temperature sensor)**: In order to implement this application, we had 3 tasks. The first task is ReadTemperature() which reads the current temperature from the sensor every 30 seconds and this is given the highest priority. This function is given a ReRunMe(600) since every tick is 50 ms so we need 600 ticks to read every 30 seconds. The second task is CheckThreshold() and this compares the measured temperature with a certain threshold provided over the UART and this is given the second highest priority. If the temperature exceeds the threshold, it sets a flag to true. This function also is given a ReRunMe(600) since every tick is 50 ms so we need 600 ticks to check the threshold every 30 seconds. The third task is ToggleLed() and this is the lowest priority. This checks if the flag is true, then a LED is toggled. This is given a ReRunMe(1) as we need the toggling to keep happening every tick or stay turned off if the flag is false.
+**1st application (Temperature sensor)**: In order to implement this application, we had 3 tasks. The first task is Read_Temperature() which reads the current temperature from the sensor every 30 seconds and this is given the highest priority. This function is given a ReRunMe(600) since every tick is 50 ms so we need 600 ticks to read every 30 seconds. The second task is Compare_Threshold() and this compares the measured temperature with a certain threshold provided over the UART and this is given the second highest priority. If the temperature exceeds the threshold, it sets a flag to true. This function also is given a ReRunMe(600) since every tick is 50 ms so we need 600 ticks to check the threshold every 30 seconds. The third task is Toggle_LED() and this is the lowest priority. This checks if the flag is true, then a LED is toggled. This is given a ReRunMe(1) as we need the toggling to keep happening every tick if flag is true or stay turned off if the flag is false.
 
 CubeMX Configurations for 1st application
 SYS: Debug -> Serial Wire <br />
@@ -78,6 +78,10 @@ Set PB3 as GPIO_Output <br />
 
 How to run the application: Generate code using the above configurations. Then in the main.c, put the code provided in the /Project1App2_2/Src/main.c and in the stm32l4xx_it.c, put the code provided in /Project1App2_2/Src/stm32l4xx_it.c. Also, the "hcSR04.h" and "hcSR04.c" need to be added to the project. Connections are made like in the video and have an object at a distance from the sensor and keep making it close and you will listen to the buzzer buzzing at a higher frequency. 
 
+
+Links for videos of applications running:
+Temperature Sensor---> https://drive.google.com/file/d/1n6ow2i-1yUnzwfv2UDGfbGJArwUFSUdo/view?usp=sharing
+Parking Sensor---> https://drive.google.com/file/d/10RDBV58ibKh_QYX2jgE-ltqeASl57-C0/view?usp=sharing
 
 
 
