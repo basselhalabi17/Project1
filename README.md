@@ -1,6 +1,8 @@
 Team Members: <br /> Bassel Halabi 900171095 <br />
               Chris Amgad 900170819 <br />
-<u> Scheduler Implementation </u>
+              
+              
+ Scheduler Implementation <u> 
 
 **Data Structures used**
 
