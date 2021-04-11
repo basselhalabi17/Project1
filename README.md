@@ -48,9 +48,9 @@ T1->priority 1 and rerun(1) , T2->priority 2 and rerun(2) , and T3->priority 3 a
 
 
 **Systick Configurations**:
-HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()*0.05); 
-HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
- HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+--HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()*0.05); 
+--HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+-- HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 
 The 0.05 in the first line is what makes the Systick generate interrupt every 50 ms (1 tick).
 
