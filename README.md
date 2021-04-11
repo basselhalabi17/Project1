@@ -25,14 +25,14 @@ DelayMs() : simulates 50 ms ticks
 
 **Scheduler unit tests**
 
-1st testcase: 
+**1st testcase: **
 T1-> Priority 1 and ReRun(0), T2->Priority 3 and ReRun(1) and T3->Priority 2 and ReRun(2)
 
 
 ![image](https://user-images.githubusercontent.com/45502245/114321546-991a6c00-9b1b-11eb-9744-731f82c9dde9.png)
 ![image](https://user-images.githubusercontent.com/45502245/114321558-a9cae200-9b1b-11eb-9509-78f921cf6ee6.png)
 
-2nd testcase: 
+**2nd testcase:** 
 T1->priority 3 and rerun(2) , T2-> priority 2 and rerun(1), and T3->priority 1 and rerun(0)
 
 ![image](https://user-images.githubusercontent.com/45502245/114321580-d41c9f80-9b1b-11eb-9f5b-613f8d2a8060.png)
@@ -40,7 +40,7 @@ T1->priority 3 and rerun(2) , T2-> priority 2 and rerun(1), and T3->priority 1 a
 
 
 
-3rd testcase: 
+**3rd testcase: **
 T1->priority 1 and rerun(1) , T2->priority 2 and rerun(2) , and T3->priority 3 and rerun(3)
 
 ![image](https://user-images.githubusercontent.com/45502245/114321601-f57d8b80-9b1b-11eb-956b-54bc6fd94ea8.png) 
@@ -80,7 +80,7 @@ How to run the application: Generate code using the above configurations. Then i
 
 
 Links for videos of applications running:
-Temperature Sensor---> https://drive.google.com/file/d/1n6ow2i-1yUnzwfv2UDGfbGJArwUFSUdo/view?usp=sharing
+Temperature Sensor---> https://drive.google.com/file/d/1n6ow2i-1yUnzwfv2UDGfbGJArwUFSUdo/view?usp=sharing <br />
 Parking Sensor---> https://drive.google.com/file/d/10RDBV58ibKh_QYX2jgE-ltqeASl57-C0/view?usp=sharing
 
 
