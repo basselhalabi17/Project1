@@ -26,9 +26,9 @@ DelayMs() : simulates 50 ms ticks
 **Scheduler unit tests**
 
 1st testcase: 
-T1: Priority 1 and ReRun(0) 
-T2: Priority 3 and ReRun(1)
-T3: Priority 2 and ReRun(2)
+T1-> Priority 1 and ReRun(0) 
+T2->Priority 3 and ReRun(1)
+T3->Priority 2 and ReRun(2)
 
 Expected Output:
 ![image](https://user-images.githubusercontent.com/45502245/114321546-991a6c00-9b1b-11eb-9744-731f82c9dde9.png)
@@ -37,7 +37,7 @@ Actual Output:
 ![image](https://user-images.githubusercontent.com/45502245/114321558-a9cae200-9b1b-11eb-9509-78f921cf6ee6.png)
 
 2nd testcase: 
-T1->priority 3 and rerun(2)
+T1->priority 3 and rerun(2) <br/>
 T2-> priority 2 and rerun(1)
 T3->priority 1 and rerun(0)
 
@@ -57,8 +57,8 @@ T2->priority 2 and rerun(2)
 T3->priority 3 and rerun(3)
 
 Expected Output:
-![image](https://user-images.githubusercontent.com/45502245/114321601-f57d8b80-9b1b-11eb-956b-54bc6fd94ea8.png)
-
+![image](https://user-images.githubusercontent.com/45502245/114321601-f57d8b80-9b1b-11eb-956b-54bc6fd94ea8.png) 
+ <br/>
 
 
 Actual Output:
