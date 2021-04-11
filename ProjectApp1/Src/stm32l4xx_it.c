@@ -1,6 +1,5 @@
 #include "main.h"
 #include "stdbool.h"
-//#include "structsdeclarations.h"
 
 /* USER CODE BEGIN Header */
 /**
@@ -267,11 +266,9 @@ void SysTick_Handler(void)
   */
 void USART1_IRQHandler(void)
 {
-	//uint8_t digit;
   /* USER CODE BEGIN USART1_IRQn 0 */
   /* USER CODE BEGIN USART1_IRQn 1 */
-	//char c='h';
-	//HAL_UART_Receive(&huart1,&c,sizeof(c),200);
+
 	uint8_t c='\0'; // '\0' represents NULL
 	HAL_UART_Receive(&huart1,&c,sizeof(c),200);
 	//HAL_UART_Transmit(&huart1,&c,sizeof(c),200);
@@ -279,13 +276,12 @@ void USART1_IRQHandler(void)
 	{
 		if (digit1=='\0')//if digit 1 was still not entered
 		{
-			//HAL_UART_Receive(&huart1,&digit1,sizeof(digit1),200);
 			digit1=c;
 			HAL_UART_Transmit(&huart1,&digit1,sizeof(digit1),200);
 		}
 		else if(digit1!='\0' && digit2=='\0') //if digit 2 was still not entered and digit 1 was entered
 		{
-			//HAL_UART_Receive(&huart1,&digit2,sizeof(digit2),200);
+			
 			digit2=c;
 			HAL_UART_Transmit(&huart1,&digit2,sizeof(digit2),200);
 		}

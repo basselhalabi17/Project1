@@ -27,22 +27,18 @@ Project File Date:  04/09/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'ProjectApp1'
+compiling stm32l4xx_it.c...
+../Src/stm32l4xx_it.c(248): warning:  #9-D: nested comment is not allowed
+    /* USER CODE END SysTick_IRQn 0 */
+../Src/stm32l4xx_it.c: 1 warning, 0 errors
 compiling main.c...
-../Src/main.c(99): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
-  		HAL_UART_Transmit(&huart1,&x,sizeof(x),200);
-../Src/main.c(100): warning:  #188-D: enumerated type mixed with another type
-  		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
-../Src/main.c(110): warning:  #167-D: argument of type "char *" is incompatible with parameter of type "uint8_t *"
-  			HAL_UART_Transmit(&huart1,&x,sizeof(x),200);
-../Src/main.c(111): warning:  #188-D: enumerated type mixed with another type
-  			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 1);
-../Src/main.c(122): warning:  #188-D: enumerated type mixed with another type
+../Src/main.c(99): warning:  #188-D: enumerated type mixed with another type
   			HAL_GPIO_WritePin(GPIOB, GPIO_PIN_3, 0);
-../Src/main.c: 5 warnings, 0 errors
+../Src/main.c: 1 warning, 0 errors
 linking...
-Program Size: Code=10352 RO-data=500 RW-data=44 ZI-data=1772  
+Program Size: Code=10356 RO-data=500 RW-data=44 ZI-data=1772  
 FromELF: creating hex file...
-"ProjectApp1\ProjectApp1.axf" - 0 Error(s), 5 Warning(s).
+"ProjectApp1\ProjectApp1.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -65,7 +61,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.4.0
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>
